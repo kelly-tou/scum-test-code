@@ -104,3 +104,17 @@ bool matrix_multiply(const matrix_t* matrix1, const matrix_t* matrix2,
     }
     return true;
 }
+
+bool matrix_copy(const matrix_t* matrix, matrix_t* result) {
+    const size_t num_rows = matrix->rows;
+    const size_t num_cols = matrix->cols;
+    const size_t size = num_rows * num_cols;
+
+    // Initialize the result matrix.
+    if (!matrix_init(result, num_rows, num_cols)) {
+        return false;
+    }
+
+    memcpy(result->buffer, matrix->buffer, size * sizeof(matrix_type_t));
+    return true;
+}
