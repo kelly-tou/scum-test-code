@@ -9,9 +9,13 @@
 
 #include "matrix.h"
 
-bool svd_init(matrix_t* mtx);
+// A = U(Lambda)(V^T)
+// Initialize an SVD computation for the given matrix.
+// Return whether the matrix was successfully intialized.
+bool svd_init(matrix_t* matrix);
 
-// right singular vectors matrix
+// Compute the V matrix and write the result to another matrix.
+// Return whether the computation was successful.
 void svd_calculate_v(matrix_t* result);
 
-#endif // __SVD_H
+#endif  // __SVD_H

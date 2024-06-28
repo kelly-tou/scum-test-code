@@ -57,6 +57,9 @@ bool matrix_add(const matrix_t* matrix1, const matrix_t* matrix2,
 bool matrix_multiply(const matrix_t* matrix1, const matrix_t* matrix2,
                      matrix_t* result);
 
+// Copy a matrix, writing the result to another matrix.
+// The result matrix does not need to be initialized.
+// Return whether the matrix copying was successful.
 bool matrix_copy(const matrix_t* matrix, matrix_t* result);
 
 #endif  // __MATRIX_H
