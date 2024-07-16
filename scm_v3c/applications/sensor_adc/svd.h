@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "fixed_point.h"
 #include "matrix.h"
 
 // A = U(Lambda)(V^T)

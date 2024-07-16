@@ -382,6 +382,11 @@
           <GroupName>app</GroupName>
           <Files>
             <File>
+              <FileName>fixed_point.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\fixed_point.h</FilePath>
+            </File>
+            <File>
               <FileName>sensor_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sensor_adc.c</FilePath>
@@ -480,6 +485,31 @@
               <FileName>scm3c_hw_interface.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\scm3c_hw_interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>matrix.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\matrix.c</FilePath>
+            </File>
+            <File>
+              <FileName>matrix.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\matrix.h</FilePath>
+            </File>
+            <File>
+              <FileName>fixed_point.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\fixed_point.h</FilePath>
+            </File>
+            <File>
+              <FileName>svd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\svd.c</FilePath>
+            </File>
+            <File>
+              <FileName>svd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\svd.h</FilePath>
             </File>
           </Files>
         </Group>
