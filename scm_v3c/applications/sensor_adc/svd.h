@@ -12,7 +12,7 @@
 // A = U(Lambda)(V^T)
 // Initialize an SVD computation for the given matrix.
 // Return whether the matrix was successfully intialized.
-bool svd_init(matrix_t* matrix);
+bool svd_init(const matrix_t* matrix);
 
 // Compute the V matrix and write the result to another matrix.
 // Return whether the computation was successful.

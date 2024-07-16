@@ -11,7 +11,7 @@
 
 matrix_t svd_computing_matrix;
 
-bool svd_init(matrix_t* matrix) {
+bool svd_init(const matrix_t* matrix) {
     if (matrix->cols != 2 || matrix->rows != 2) {
         return false;
     }
@@ -54,7 +54,7 @@ void eigenvalues(matrix_type_t a, matrix_type_t b, matrix_type_t c,
 // Calculate the nullspace of a 2x2 matrix.
 // Returns whether the calculation was successful.
 // https://www.quora.com/How-do-you-find-the-null-space-of-a-2x2-matrix
-bool nullspace(matrix_type_t a, matrix_type_t b, matrix_type_t c,
+void nullspace(matrix_type_t a, matrix_type_t b, matrix_type_t c,
                matrix_type_t d, matrix_type_t* nullspace_entry_1,
                matrix_type_t* nullspace_entry_2) {
     if ((square(a) - square(b)) != 0) {
@@ -62,28 +62,28 @@ bool nullspace(matrix_type_t a, matrix_type_t b, matrix_type_t c,
         // trivial nullspace.
         *nullspace_entry_1 = 0;
         *nullspace_entry_2 = 0;
-        return true;
+        return;
     }
     if (a != 0) {
         *nullspace_entry_1 = -b;
         *nullspace_entry_2 = a;
-        return true;
+        return;
     }
     if (c != 0) {  // a = 0
         *nullspace_entry_1 = -d;
         *nullspace_entry_2 = c;
-        return true;
+        return;
     }
     if (b == 0 && d == 0) {  // a = 0 and c = 0
         // This is the zero matrix case, and all vectors in R^2 are in the
         // nullspace, so just return [1, 1]^T (i.e. one vector).
         *nullspace_entry_1 = 1;
         *nullspace_entry_2 = 1;
-        return true;
+        return;
     }
     *nullspace_entry_1 = 1;
     *nullspace_entry_2 = 0;
-    return true;
+    return;
 }
 
 // Get the entries of a 2x2 matrix in the form [a b
