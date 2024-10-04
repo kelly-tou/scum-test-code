@@ -502,14 +502,34 @@
               <FilePath>.\fixed_point.h</FilePath>
             </File>
             <File>
-              <FileName>svd.c</FileName>
+              <FileName>svd_3.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\svd.c</FilePath>
+              <FilePath>.\svd_3.c</FilePath>
             </File>
             <File>
-              <FileName>svd.h</FileName>
+              <FileName>svd_3.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\svd.h</FilePath>
+              <FilePath>.\svd_3.h</FilePath>
+            </File>
+            <File>
+              <FileName>matrix_pencil_method.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\matrix_pencil_method.c</FilePath>
+            </File>
+            <File>
+              <FileName>matrix_pencil_method.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\matrix_pencil_method.h</FilePath>
+            </File>
+            <File>
+              <FileName>svd_3_v2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\svd_3_v2.c</FilePath>
+            </File>
+            <File>
+              <FileName>svd_3_v2.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\svd_3_v2.h</FilePath>
             </File>
           </Files>
         </Group>

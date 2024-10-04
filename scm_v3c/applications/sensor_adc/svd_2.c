@@ -1,7 +1,7 @@
 
-// ONLY FOR 2X2 MATRICES
+// ONLY FOR MX2 MATRICES
 
-#include "svd.h"
+#include "svd_2.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -13,7 +13,7 @@
 matrix_t svd_computing_matrix;
 
 bool svd_init(const matrix_t* matrix) {
-    if (matrix->cols != 2 || matrix->rows != 2) {
+    if (matrix->cols != 2) {
         return false;
     }
     matrix_copy(matrix, &svd_computing_matrix);
@@ -22,9 +22,9 @@ bool svd_init(const matrix_t* matrix) {
 
 // Calculates the square root of s with relative tolerance 0.0001.
 // https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Heron's_method
-fixed_point_short_t herons_method(fixed_point_short_t s) {
-    fixed_point_short_t guess = s;
-    fixed_point_short_t tolerance = fixed_point_init(0.0001);
+static fixed_point_t herons_method(fixed_point_t s) {
+    fixed_point_t guess = s;
+    fixed_point_t tolerance = fixed_point_init(0.0001);
     while (fixed_point_subtract(fixed_point_multiply(guess, guess), s) >
            fixed_point_multiply(tolerance, s)) {
         guess = fixed_point_divide(
@@ -35,21 +35,20 @@ fixed_point_short_t herons_method(fixed_point_short_t s) {
 }
 
 // Calculates the square of a number n.
-fixed_point_short_t square(fixed_point_short_t n) {
+static fixed_point_t square(fixed_point_t n) {
     if (n < fixed_point_init(0)) {
-        fixed_point_short_t positive_n = -n;
+        fixed_point_t positive_n = -n;
         return fixed_point_multiply(positive_n, positive_n);
     }
     return fixed_point_multiply(n, n);
 }
 
 // Calculate the eigenvalues of a 2x2 matrix with entries a, b, c, and d.
-void eigenvalues(fixed_point_short_t a, fixed_point_short_t b,
-                 fixed_point_short_t c, fixed_point_short_t d,
-                 fixed_point_short_t* eigenvalue_1,
-                 fixed_point_short_t* eigenvalue_2) {
+static void eigenvalues(fixed_point_t a, fixed_point_t b, fixed_point_t c,
+                        fixed_point_t d, fixed_point_t* eigenvalue_1,
+                        fixed_point_t* eigenvalue_2) {
     // Applying the quadratic formula to find the eigenvalues.
-    fixed_point_short_t n = fixed_point_add(a, d);
+    fixed_point_t n = fixed_point_add(a, d);
     *eigenvalue_1 = fixed_point_divide(
         fixed_point_add(
             n,
@@ -71,10 +70,9 @@ void eigenvalues(fixed_point_short_t a, fixed_point_short_t b,
 // Calculate the nullspace of a 2x2 matrix.
 // Returns whether the calculation was successful.
 // https://www.quora.com/How-do-you-find-the-null-space-of-a-2x2-matrix
-void nullspace(fixed_point_short_t a, fixed_point_short_t b,
-               fixed_point_short_t c, fixed_point_short_t d,
-               fixed_point_short_t* nullspace_entry_1,
-               fixed_point_short_t* nullspace_entry_2) {
+static void nullspace(fixed_point_t a, fixed_point_t b, fixed_point_t c,
+                      fixed_point_t d, fixed_point_t* nullspace_entry_1,
+                      fixed_point_t* nullspace_entry_2) {
     if (fixed_point_subtract(square(a), square(b)) != fixed_point_init(0)) {
         // If the determinant of the matrix does not equal 0, then it has a
         // trivial nullspace.
@@ -107,20 +105,24 @@ void nullspace(fixed_point_short_t a, fixed_point_short_t b,
 
 // Get the entries of a 2x2 matrix in the form [a b
 //                                              c d]
-void get_matrix_entries(const matrix_t* matrix, fixed_point_short_t* a,
-                        fixed_point_short_t* b, fixed_point_short_t* c,
-                        fixed_point_short_t* d) {
+static void get_matrix_entries(const matrix_t* matrix, fixed_point_t* a,
+                               fixed_point_t* b, fixed_point_t* c,
+                               fixed_point_t* d) {
     matrix_get(matrix, 0, 0, a);
     matrix_get(matrix, 0, 1, b);
     matrix_get(matrix, 1, 0, c);
     matrix_get(matrix, 1, 1, d);
 }
 
-void svd_calculate_v(matrix_t* result) {
-    fixed_point_short_t a = fixed_point_init(0);
-    fixed_point_short_t b = fixed_point_init(0);
-    fixed_point_short_t c = fixed_point_init(0);
-    fixed_point_short_t d = fixed_point_init(0);
+bool svd_calculate_v(matrix_t* result) {
+    if (result->rows != 2 || result->cols != 2) {
+        return false;
+    }
+
+    fixed_point_t a = fixed_point_init(0);
+    fixed_point_t b = fixed_point_init(0);
+    fixed_point_t c = fixed_point_init(0);
+    fixed_point_t d = fixed_point_init(0);
     get_matrix_entries(&svd_computing_matrix, &a, &b, &c, &d);
 
     // Computing with the matrix (A^T)A.
@@ -139,8 +141,8 @@ void svd_calculate_v(matrix_t* result) {
     get_matrix_entries(&svd_computing_matrix, &a, &b, &c, &d);
 
     // Calculate the eigenvalues of (A^T)A.
-    fixed_point_short_t eigenvalue_1 = -fixed_point_init(1);
-    fixed_point_short_t eigenvalue_2 = -fixed_point_init(1);
+    fixed_point_t eigenvalue_1 = -fixed_point_init(1);
+    fixed_point_t eigenvalue_2 = -fixed_point_init(1);
     if (fixed_point_subtract(
             square(fixed_point_add(a, d)),
             fixed_point_multiply(fixed_point_init(4),
@@ -153,7 +155,7 @@ void svd_calculate_v(matrix_t* result) {
     }
 
     // Calculate the eigenvectors of (A^T)A and add them to the V matrix result.
-    fixed_point_short_t eigenvector_entry1, eigenvector_entry2;
+    fixed_point_t eigenvector_entry1, eigenvector_entry2;
     nullspace(fixed_point_subtract(a, eigenvalue_1), b, c,
               fixed_point_subtract(d, eigenvalue_1), &eigenvector_entry1,
               &eigenvector_entry2);
@@ -165,4 +167,6 @@ void svd_calculate_v(matrix_t* result) {
               &eigenvector_entry2);
     matrix_set(result, 0, 1, eigenvector_entry1);
     matrix_set(result, 1, 1, eigenvector_entry2);
+
+    return true;
 }

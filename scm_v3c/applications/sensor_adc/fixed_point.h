@@ -5,13 +5,13 @@
 #include <stdlib.h>
 
 // Number of integer bits.
-#define FIXED_POINT_P 50
+#define FIXED_POINT_P 44
 
 // Number of short integer bits.
 #define FIXED_POINT_SHORT_P 18
 
 // Number of fractional bits.
-#define FIXED_POINT_Q 14
+#define FIXED_POINT_Q 20
 
 // Conversion factor to and from fixed point integers.
 #define FIXED_POINT_F (1 << FIXED_POINT_Q)
@@ -64,6 +64,37 @@ static inline fixed_point_t fixed_point_multiply(const fixed_point_t f,
 static inline fixed_point_t fixed_point_divide(const fixed_point_t f,
                                                const fixed_point_t g) {
     return ((int64_t)f << FIXED_POINT_Q) / g;
+}
+
+// Take the absolute value of a fixed point number.
+static inline fixed_point_t fixed_point_absolute_value(const fixed_point_t f) {
+    if (f < fixed_point_init(0)) {
+        return -f;
+    }
+    return f;
+}
+
+// Square a fixed point number.
+static inline fixed_point_t fixed_point_square(const fixed_point_t f) {
+    return fixed_point_multiply(f, f);
+}
+
+// Cube a fixed point number.
+static inline fixed_point_t fixed_point_cube(const fixed_point_t f) {
+    return fixed_point_multiply(f, fixed_point_multiply(f, f));
+}
+
+// Take the square root of a fixed point number via Heron's Method
+static inline fixed_point_t fixed_point_square_root(const fixed_point_t f) {
+    fixed_point_t guess = f;
+    fixed_point_t tolerance = fixed_point_init(1.0001);
+    while (guess >
+           fixed_point_divide(fixed_point_multiply(f, tolerance), guess)) {
+        guess = fixed_point_divide(
+            fixed_point_add(guess, fixed_point_divide(f, guess)),
+            fixed_point_init(2));
+    }
+    return guess;
 }
 
 #endif  // __FIXED_POINT_H
