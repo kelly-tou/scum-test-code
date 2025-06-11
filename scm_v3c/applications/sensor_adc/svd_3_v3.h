@@ -1,5 +1,7 @@
-#ifndef __SVD_3_V2_H
-#define __SVD_3_V2_H
+// calculate the v matrix of the SVD for 3x3 matrices only
+
+#ifndef __SVD_3_V3_H
+#define __SVD_3_V3_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -16,4 +18,4 @@ bool svd_init(const matrix_t* matrix);
 // Return whether the computation was successful.
 bool svd_calculate_v(matrix_t* result);
 
-#endif  // __SVD_V2_H
+#endif  // __SVD_V3_H

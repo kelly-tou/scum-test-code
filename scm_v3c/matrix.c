@@ -19,21 +19,15 @@ static inline size_t matrix_index(const matrix_t* matrix, const size_t row,
     return row * matrix->cols + col;
 }
 
-bool matrix_init(matrix_t* matrix, const size_t rows, const size_t cols) {
-    // if (rows * cols > MATRIX_MAX_SIZE) {
-    //     return false;
-    // }
+bool matrix_init(matrix_t* matrix, const size_t rows, const size_t cols,
+                 fixed_point_t* buffer) {
     if (rows == 0 || cols == 0) {
         return false;
     }
 
     matrix->rows = rows;
     matrix->cols = cols;
-
-    matrix->buffer = malloc(rows * cols * sizeof(fixed_point_t));
-    if (matrix->buffer == NULL) {
-        return false;
-    }
+    matrix->buffer = buffer;
 
     // Zero-initialize the matrix.
     memset(matrix->buffer, 0, rows * cols * sizeof(fixed_point_t));
@@ -65,7 +59,7 @@ bool matrix_set(matrix_t* matrix, const size_t row, const size_t col,
 }
 
 bool matrix_add(const matrix_t* matrix1, const matrix_t* matrix2,
-                matrix_t* result) {
+                matrix_t* result, fixed_point_t* result_buffer) {
     const size_t num_rows = matrix1->rows;
     const size_t num_cols = matrix1->cols;
 
@@ -75,7 +69,7 @@ bool matrix_add(const matrix_t* matrix1, const matrix_t* matrix2,
     }
 
     // Initialize the result matrix.
-    if (!matrix_init(result, num_rows, num_cols)) {
+    if (!matrix_init(result, num_rows, num_cols, result_buffer)) {
         return false;
     }
 
@@ -88,7 +82,7 @@ bool matrix_add(const matrix_t* matrix1, const matrix_t* matrix2,
 }
 
 bool matrix_multiply(const matrix_t* matrix1, const matrix_t* matrix2,
-                     matrix_t* result) {
+                     matrix_t* result, fixed_point_t* result_buffer) {
     const size_t num_rows = matrix1->rows;
     const size_t num_cols = matrix2->cols;
     const size_t inner_dimension = matrix1->cols;
@@ -99,7 +93,8 @@ bool matrix_multiply(const matrix_t* matrix1, const matrix_t* matrix2,
     }
 
     // Initialize the result matrix.
-    if (!matrix_init(result, num_rows, num_cols)) {
+    if (!matrix_init(result, num_rows, num_cols, result_buffer)) {
+        printf("matrix multiply\n");
         return false;
     }
 
@@ -118,13 +113,14 @@ bool matrix_multiply(const matrix_t* matrix1, const matrix_t* matrix2,
     return true;
 }
 
-bool matrix_copy(const matrix_t* matrix, matrix_t* result) {
+bool matrix_copy(const matrix_t* matrix, matrix_t* result,
+                 fixed_point_t* result_buffer) {
     const size_t num_rows = matrix->rows;
     const size_t num_cols = matrix->cols;
     const size_t size = num_rows * num_cols;
 
     // Initialize the result matrix.
-    if (!matrix_init(result, num_rows, num_cols)) {
+    if (!matrix_init(result, num_rows, num_cols, result_buffer)) {
         return false;
     }
 
@@ -132,12 +128,13 @@ bool matrix_copy(const matrix_t* matrix, matrix_t* result) {
     return true;
 }
 
-bool matrix_transpose(const matrix_t* matrix, matrix_t* result) {
+bool matrix_transpose(const matrix_t* matrix, matrix_t* result,
+                      fixed_point_t* result_buffer) {
     const size_t num_rows = matrix->rows;
     const size_t num_cols = matrix->cols;
 
     // Initialize the result matrix.
-    if (!matrix_init(result, num_cols, num_rows)) {
+    if (!matrix_init(result, num_cols, num_rows, result_buffer)) {
         return false;
     }
 

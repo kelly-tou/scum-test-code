@@ -11,6 +11,9 @@
 #include "sensor_gpio.h"
 #include "time_constant.h"
 
+// Maximum ADC sample.
+#define MAX_ADC_SAMPLE 511
+
 // Resistive sensor measurement state.
 typedef enum {
     SENSOR_RESISTIVE_MEASUREMENT_STATE_INVALID = -1,
@@ -94,8 +97,7 @@ void sensor_resistive_measure(sensor_resistive_time_constant_t* time_constant) {
     sensor_resistive_measure_run();
 
     // Estimate the time constant.
-    // printf("Received sufficient samples. Estimating the time constant
-    // now.\n");
+    printf("Received sufficient samples. Estimating the time constant now.\n");
     const fixed_point_t estimated_time_constant = time_constant_estimate();
     const fixed_point_t scaling_factor = fixed_point_init(1);
 

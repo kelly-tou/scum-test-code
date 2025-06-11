@@ -1,12 +1,11 @@
-#include "matrix_pencil_method.h"
-
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 #include "fixed_point.h"
 #include "matrix.h"
-#include "svd_3.h"
+#include "matrix_pencil_method.h"
+#include "svd_3_v3.h"
 
 fixed_point_t sampling_frequency;
 
@@ -16,54 +15,7 @@ size_t M_parameter;  // number of eigenvalues
 
 matrix_t data_matrix, data_matrix_v, computing_matrix;
 
-fixed_point_t data_matrix_buffer[9], data_matrix_v_buffer[9],
-    computing_matrix_buffer[4];
-
-// Determine the more positive eigenvalue of a 2x2 matrix.
-// Return whether the computation was successful.
-bool eigenvalues(const matrix_t* matrix, fixed_point_t* eigenvalue) {
-    // Applying the quadratic formula to find the eigenvalues.
-    fixed_point_t a = fixed_point_init(0);
-    fixed_point_t b = fixed_point_init(0);
-    fixed_point_t c = fixed_point_init(0);
-    fixed_point_t d = fixed_point_init(0);
-
-    matrix_get(matrix, 0, 0, &a);
-    matrix_get(matrix, 0, 1, &b);
-    matrix_get(matrix, 1, 0, &c);
-    matrix_get(matrix, 1, 1, &d);
-
-    fixed_point_t determinant = fixed_point_subtract(
-        fixed_point_multiply(a, d), fixed_point_multiply(b, c));
-    fixed_point_t n = fixed_point_add(a, d);
-    fixed_point_t discriminant = fixed_point_subtract(
-        fixed_point_square(n),
-        fixed_point_multiply(fixed_point_init(4), determinant));
-
-    if (discriminant < fixed_point_init(0)) {
-        *eigenvalue = fixed_point_init(1);
-        printf("Imaginary Eigenvalue\n");
-    }
-
-    fixed_point_t eigenvalue_1 = fixed_point_divide(
-        fixed_point_add(n, fixed_point_square_root(discriminant)),
-        fixed_point_init(2));
-    fixed_point_t eigenvalue_2 = fixed_point_divide(
-        fixed_point_add(n, fixed_point_square_root(discriminant)),
-        fixed_point_init(2));
-
-    // of the two eigenvalues, pick the smaller one that is not negative.
-    if (eigenvalue_1 < fixed_point_init(0) || eigenvalue_2 < eigenvalue_1) {
-        if (eigenvalue_2 < fixed_point_init(0)) {
-            printf("Two Negative Eigenvalues\n");
-        }
-        *eigenvalue = eigenvalue_2;
-    } else {
-        *eigenvalue = eigenvalue_1;
-    }
-
-    return true;
-}
+fixed_point_t data_matrix_buffer[9], data_matrix_v_buffer[3];
 
 // Form the (Y^T)Y matrix. We need to find the right singular vectors of Y.
 bool form_data_matrix(const uint16_t* data, const size_t length,
@@ -71,15 +23,6 @@ bool form_data_matrix(const uint16_t* data, const size_t length,
     fixed_point_t sum_of_squares = fixed_point_init(0);
     fixed_point_t sum_of_offset_1 = fixed_point_init(0);
     fixed_point_t sum_of_offset_2 = fixed_point_init(0);
-
-    // uint16_t minimum_value_int = data[0];
-    // for (size_t i = 0; i < length; ++i) {
-    //     if (data[i] < minimum_value_int) {
-    //         minimum_value_int = data[i];
-    //     }
-    // }
-
-    // fixed_point_t minimum_value = fixed_point_init(minimum_value_int);
 
     fixed_point_t minimum_value = fixed_point_init(data[length - 1]);
 
@@ -218,41 +161,6 @@ bool form_data_matrix(const uint16_t* data, const size_t length,
     return true;
 }
 
-// Form (((V1')^H)^t)((V2')^H) matrix. We need to find the eigenvalues of this
-// matrix.
-bool form_computing_matrix(void) {
-    fixed_point_t a = fixed_point_init(0);
-    fixed_point_t b = fixed_point_init(0);
-    fixed_point_t c = fixed_point_init(0);
-    fixed_point_t d = fixed_point_init(0);
-    fixed_point_t e = fixed_point_init(0);
-    fixed_point_t f = fixed_point_init(0);
-
-    matrix_get(&data_matrix_v, 0, 0, &a);
-    matrix_get(&data_matrix_v, 0, 1, &b);
-    matrix_get(&data_matrix_v, 1, 0, &c);
-    matrix_get(&data_matrix_v, 1, 1, &d);
-    matrix_get(&data_matrix_v, 2, 0, &e);
-    matrix_get(&data_matrix_v, 2, 1, &f);
-
-    matrix_set(&computing_matrix, 0, 0, fixed_point_init(0));
-    matrix_set(
-        &computing_matrix, 0, 1,
-        fixed_point_divide(fixed_point_subtract(fixed_point_multiply(d, e),
-                                                fixed_point_multiply(c, f)),
-                           fixed_point_subtract(fixed_point_multiply(a, d),
-                                                fixed_point_multiply(b, c))));
-    matrix_set(&computing_matrix, 1, 0, fixed_point_init(1));
-    matrix_set(
-        &computing_matrix, 1, 1,
-        fixed_point_divide(fixed_point_subtract(fixed_point_multiply(a, f),
-                                                fixed_point_multiply(b, e)),
-                           fixed_point_subtract(fixed_point_multiply(a, d),
-                                                fixed_point_multiply(b, c))));
-
-    return true;
-}
-
 bool matrix_pencil_method_init(const fixed_point_t signal_sampling_frequency,
                                const uint16_t* data, const size_t length) {
     sampling_frequency = signal_sampling_frequency;
@@ -271,17 +179,11 @@ bool matrix_pencil_method_init(const fixed_point_t signal_sampling_frequency,
         return false;
     }
 
-    if (!matrix_init(&data_matrix_v, 3, 3, data_matrix_v_buffer)) {
+    if (!matrix_init(&data_matrix_v, 3, 1, data_matrix_v_buffer)) {
         return false;
     }
 
     svd_calculate_v(&data_matrix_v);
-
-    if (!matrix_init(&computing_matrix, 2, 2, computing_matrix_buffer)) {
-        return false;
-    }
-
-    form_computing_matrix();
 
     return true;
 }
@@ -320,12 +222,19 @@ bool ln(const fixed_point_t x, fixed_point_t* result) {
 }
 
 bool matrix_pencil_method_get_time_constant(fixed_point_t* time_constant) {
+    fixed_point_t a = fixed_point_init(0);
+    fixed_point_t b = fixed_point_init(0);
+    fixed_point_t c = fixed_point_init(0);
     fixed_point_t eigenvalue = fixed_point_init(0);
     fixed_point_t n = fixed_point_init(0);
 
-    if (!eigenvalues(&computing_matrix, &eigenvalue)) {
-        return false;
-    }
+    matrix_get(&data_matrix_v, 0, 0, &a);
+    matrix_get(&data_matrix_v, 1, 0, &b);
+    matrix_get(&data_matrix_v, 2, 0, &c);
+
+    eigenvalue = fixed_point_divide(
+        fixed_point_add(fixed_point_multiply(a, b), fixed_point_multiply(b, c)),
+        fixed_point_add(fixed_point_square(a), fixed_point_square(b)));
 
     if (!ln(eigenvalue, &n)) {
         return false;

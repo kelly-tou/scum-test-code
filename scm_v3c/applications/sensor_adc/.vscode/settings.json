@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "stdbool.h": "c",
+        "fixed_point.h": "c",
+        "__locale": "cpp",
+        "matrix.h": "c",
+        "matrix_pencil_method.h": "c",
+        "string": "c",
+        "string_view": "c",
+        "stdint.h": "c"
+    }
+}

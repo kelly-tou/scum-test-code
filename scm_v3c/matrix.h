@@ -31,7 +31,8 @@ typedef struct {
 // Initialize a matrix with the given number of rows and columns. By default,
 // the matrix will be zero-initialized. Return whether the matrix was
 // successfully initialized.
-bool matrix_init(matrix_t* matrix, size_t rows, size_t cols);
+bool matrix_init(matrix_t* matrix, size_t rows, size_t cols,
+                 fixed_point_t* buffer);
 
 // Get the number of rows in the matrix.
 size_t matrix_num_rows(const matrix_t* matrix);
@@ -52,22 +53,24 @@ bool matrix_set(matrix_t* matrix, size_t row, size_t col, fixed_point_t value);
 // The result matrix does not need to be initialized.
 // Return whether the matrix addition was successful.
 bool matrix_add(const matrix_t* matrix1, const matrix_t* matrix2,
-                matrix_t* result);
+                matrix_t* result, fixed_point_t* result_buffer);
 
 // Multiply two matrices together, writing the result to another matrix.
 // The result matrix does not need to be initialized.
 // Return whether the matrix multiplication was successful.
 bool matrix_multiply(const matrix_t* matrix1, const matrix_t* matrix2,
-                     matrix_t* result);
+                     matrix_t* result, fixed_point_t* result_buffer);
 
 // Copy a matrix, writing the result to another matrix.
 // The result matrix does not need to be initialized.
 // Return whether the matrix copying was successful.
-bool matrix_copy(const matrix_t* matrix, matrix_t* result);
+bool matrix_copy(const matrix_t* matrix, matrix_t* result,
+                 fixed_point_t* result_buffer);
 
 // Tranpose a matrix, writing the result to another matrix.
 // The result matrix does not need to be initialized.
 // Return whether the matrix transpose was successful.
-bool matrix_transpose(const matrix_t* matrix, matrix_t* result);
+bool matrix_transpose(const matrix_t* matrix, matrix_t* result,
+                      fixed_point_t* result_buffer);
 
 #endif  // __MATRIX_H
