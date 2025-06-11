@@ -16,7 +16,7 @@ bool svd_init(const matrix_t* matrix) {
     if (matrix->cols != 2) {
         return false;
     }
-    matrix_copy(matrix, &svd_computing_matrix);
+    // matrix_copy(matrix, &svd_computing_matrix);
     return true;
 }
 

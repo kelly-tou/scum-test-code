@@ -7,6 +7,7 @@
 
 #include "adc_msb.h"
 #include "fixed_point.h"
+#include "linear_regression.h"
 #include "matrix_pencil_method.h"
 
 // Maximum number of ADC samples.
@@ -135,5 +136,12 @@ fixed_point_t time_constant_estimate(void) {
         g_time_constant_adc_samples, g_time_constant_num_adc_samples);
     fixed_point_t time_constant = fixed_point_init(0);
     matrix_pencil_method_get_time_constant(&time_constant);
+
+    // linear_regression_init(
+    //     fixed_point_init(g_time_constant_sampling_frequency),
+    //     g_time_constant_adc_samples, g_time_constant_num_adc_samples);
+    // fixed_point_t time_constant = fixed_point_init(0);
+    // linear_regression_get_time_constant(&time_constant);
+
     return time_constant;
 }
