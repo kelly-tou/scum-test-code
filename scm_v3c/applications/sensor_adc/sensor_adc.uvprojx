@@ -512,26 +512,6 @@
               <FilePath>.\svd_3.h</FilePath>
             </File>
             <File>
-              <FileName>matrix_pencil_method.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\matrix_pencil_method.c</FilePath>
-            </File>
-            <File>
-              <FileName>matrix_pencil_method.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\matrix_pencil_method.h</FilePath>
-            </File>
-            <File>
-              <FileName>svd_3_v2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\svd_3_v2.c</FilePath>
-            </File>
-            <File>
-              <FileName>svd_3_v2.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\svd_3_v2.h</FilePath>
-            </File>
-            <File>
               <FileName>sensor_resistive.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sensor_resistive.c</FilePath>
@@ -580,6 +560,16 @@
               <FileName>sensor_gpio.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\sensor_gpio.h</FilePath>
+            </File>
+            <File>
+              <FileName>linear_regression.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\linear_regression.c</FilePath>
+            </File>
+            <File>
+              <FileName>linear_regression.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\linear_regression.h</FilePath>
             </File>
           </Files>
         </Group>
