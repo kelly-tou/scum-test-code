@@ -73,8 +73,9 @@ int main(void) {
     // Initialize measuring a resistive sensor.
     sensor_resistive_init(&g_sensor_resistive_config);
 
-    while (true) {
-        printf("Measuring the resistive sensor.\n");
+    uint8_t count = 0;
+    while (count < 50) {
+        printf("%u: Measuring the resistive sensor.\n", count);
         sensor_resistive_time_constant_t time_constant;
         sensor_resistive_measure(&time_constant);
         printf("Estimated time constant: %lld / %lld\n",
@@ -82,5 +83,7 @@ int main(void) {
 
         // Wait for the next ADC read.
         for (size_t i = 0; i < NUM_CYCLES_BETWEEN_ADC_READS; ++i) {}
+
+        ++count;
     }
 }

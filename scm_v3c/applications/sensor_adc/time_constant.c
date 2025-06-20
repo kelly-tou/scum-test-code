@@ -8,7 +8,7 @@
 #include "adc_msb.h"
 #include "fixed_point.h"
 #include "linear_regression.h"
-#include "matrix_pencil_method.h"
+// #include "matrix_pencil_method.h"
 
 // Maximum number of ADC samples.
 // #define TIME_CONSTANT_MAX_NUM_ADC_SAMPLES 5000 // for MPM
