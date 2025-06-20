@@ -5,13 +5,15 @@
 #include <stdlib.h>
 
 // Number of integer bits.
-#define FIXED_POINT_P 44
+// #define FIXED_POINT_P 44 // MPM
+#define FIXED_POINT_P 50  // Linear Regression
 
 // Number of short integer bits.
 #define FIXED_POINT_SHORT_P 18
 
 // Number of fractional bits.
-#define FIXED_POINT_Q 20
+// #define FIXED_POINT_Q 20 // MPM
+#define FIXED_POINT_Q 14  // Linear Regression
 
 // Conversion factor to and from fixed point integers.
 #define FIXED_POINT_F (1 << FIXED_POINT_Q)

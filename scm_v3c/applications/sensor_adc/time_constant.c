@@ -11,8 +11,7 @@
 // #include "matrix_pencil_method.h"
 
 // Maximum number of ADC samples.
-// #define TIME_CONSTANT_MAX_NUM_ADC_SAMPLES 5000 // for MPM
-#define TIME_CONSTANT_MAX_NUM_ADC_SAMPLES 3000  // for linear regression
+#define TIME_CONSTANT_MAX_NUM_ADC_SAMPLES 5000
 
 // Number of samples to average at the end to find the minimum ADC sample.
 #define TIME_CONSTANT_NUM_AVERAGES_FOR_MIN_ADC_SAMPLE 100
